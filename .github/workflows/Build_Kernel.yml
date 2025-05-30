@@ -201,9 +201,9 @@ jobs:
           echo "⚙️ Configure KernelSU Variants: $KSU_VARIANT (配置 KernelSU 变体: $KSU_VARIANT)"
           
           if [ "$KSU_VARIANT" == "SukiSU-Ultra" ]; then
-            curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/susfs-dev/kernel/setup.sh" | bash -s susfs-dev
+            curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
           elif [ "$KSU_VARIANT" == "RKSU" ]; then
-            curl -LSs "https://raw.githubusercontent.com/rsuntk/KernelSU/susfs-v1.5.5/kernel/setup.sh" | bash -s susfs-v1.5.5
+            curl -LSs "https://raw.githubusercontent.com/rsuntk/KernelSU/main/kernel/setup.sh" | bash -s main
           elif [ "$KSU_VARIANT" == "KernelSU" ]; then
             curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
           else
@@ -252,7 +252,6 @@ jobs:
             -e IP_NF_TARGET_TTL \
             -e IP6_NF_TARGET_HL \
             -e IP6_NF_MATCH_HL \
-            -e UCLAMP_TASK \
             -e TCP_CONG_ADVANCED \
             -e TCP_CONG_BIC \
             -e TCP_CONG_CUBIC \
@@ -377,7 +376,7 @@ jobs:
           fi
             
           # 根据 KernelSU 变体修改配置
-          if [ "$KSU" == "SukiSU-Ultra" ] || [ "$KSU" == "RKSU" ]; then
+          if [ "$KSU" == "SukiSU-Ultra-Susfs" ]]; then
               echo "🔧 Applying SukiSU-Ultra & RKSU Configuration... (应用 SukiSU-Ultra & RKSU 配置)"
               scripts/config --file out/.config \
                   -e KSU \
@@ -398,6 +397,16 @@ jobs:
                   -e KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG \
                   -e KSU_SUSFS_OPEN_REDIRECT \
                   -d KSU_SUSFS_SUS_SU
+          elif [ "$KSU" == "SukiSU-Ultra" ]]; then
+              echo "🔧 Applying SukiSU-Ultra & RKSU Configuration... (应用 SukiSU-Ultra & RKSU 配置)"
+              scripts/config --file out/.config \
+                  -e KSU \
+                  -e KSU_MANUAL_HOOK
+          elif [ "$KSU" == "RKSU" ]; then
+              echo "🔧 Applying RKSU Configuration... (应用 RKSU 配置)"
+              scripts/config --file out/.config \
+                  -e KSU \
+                  -e KSU_MANUAL_HOOK
           elif [ "$KSU" == "KernelSU" ]; then
               echo "🔧 Applying KernelSU Configuration... (应用 KernelSU 配置)"
               scripts/config --file out/.config \
